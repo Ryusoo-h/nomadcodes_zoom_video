@@ -15,6 +15,25 @@ app.get("/*", (req, res) => res.redirect("/"));
 const httpServer = http.createServer(app);
 const wsServer = SocketIO(httpServer);
 
+function publicRooms() {
+    const {
+        sockets: {
+            adapter: { sids, rooms },
+        },
+    } = wsServer;
+    const publicRooms = [];
+    rooms.forEach((_, key) => { // 신경쓰지 않을 요소는 _로 적나봄!
+        if(sids.get(key) === undefined) { // true면 Public room을 찾은것이다.
+            publicRooms.push(key);
+        }
+    }) 
+    return publicRooms;
+}
+
+function countRoom(roomName) {
+    return wsServer.sockets.adapter.rooms.get(roomName)?.size;
+}
+
 wsServer.on("connection", (socket) => {
     socket["nickname"] = "Anon";
     socket.onAny((event) => {
@@ -23,10 +42,14 @@ wsServer.on("connection", (socket) => {
     socket.on("enter_room", (roomName, done) => {
         socket.join(roomName);
         done();
-        socket.to(roomName).emit("welcome", socket.nickname); // welcome 이벤트를 roomName에 있는 모든사람에게 emit 함
+        socket.to(roomName).emit("welcome", socket.nickname, countRoom(roomName)); // welcome 이벤트를 roomName에 있는 모든사람에게 emit 함
+        wsServer.sockets.emit("room_change", publicRooms());// 누군가 방에 들어오면 모두에게 방이 변경됨을 알려줄것
     });
     socket.on("disconnecting", () => {
-        socket.rooms.forEach((room) => socket.to(room).emit("bye", socket.nickname));
+        socket.rooms.forEach((room) => socket.to(room).emit("bye", socket.nickname, countRoom(room)-1 ));
+        });
+    socket.on("disconnect", () => {
+        wsServer.sockets.emit("room_change", publicRooms());// 누군가 방을 떠나면 모두에게 방이 변경됨을 알려줄것
     });
     socket.on("new_message", (msg, room, done) => {
         socket.to(room).emit("new_message", `${socket.nickname}: ${msg}`);
