@@ -14,6 +14,7 @@ let myStream;
 let muted = false; // default : false; 왜냐면 처음에는 소리가 나는 상태로 시작할거기 때문
 let cameraOff = false;
 let myPeerConnection;
+let myDataChannel;
 
 async function getCameras() {
     try{
@@ -146,6 +147,9 @@ welcomeForm.addEventListener("submit", handleWelcomeSubmit);
 // Socket Code
 
 socket.on("welcome", async() => { // ⭐ PeerA에서 실행됨
+    myDataChannel = myPeerConnection.createDataChannel("chat"); // 채널 추가
+    myDataChannel.addEventListener("message", (event) => console.log(event.data));
+    console.log("made data channel");
     const offer = await myPeerConnection.createOffer();
     myPeerConnection.setLocalDescription(offer);
     console.log("sent the offer");
@@ -153,6 +157,10 @@ socket.on("welcome", async() => { // ⭐ PeerA에서 실행됨
 })
 
 socket.on("offer", async(offer) => { // ⭐ PeerB에서 실행됨
+    myPeerConnection.addEventListener("datachannel", (event) => {
+        myDataChannel = event.channel;
+        myDataChannel.addEventListener("message", (event) => console.log(event.data));
+    }) // data를 출력해준다
     console.log("received the offer");
     myPeerConnection.setRemoteDescription(offer);
     const answer = await myPeerConnection.createAnswer();
