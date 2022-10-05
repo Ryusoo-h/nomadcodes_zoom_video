@@ -142,13 +142,13 @@ async function initCall() {
 async function handleWelcomeSubmit(event) {
     event.preventDefault();
     const input = welcomeForm.querySelector("input");
-    await initCall();
-    socket.emit("join_room", input.value);
     roomName = input.value;
     const title = call.querySelector('h2')
     const span = document.createElement("span");
     span.innerText = "(방이름 : " + input.value + ")";
     title.appendChild(span);
+    await initCall();
+    socket.emit("join_room", input.value);
     input.value = "";
 }
 
