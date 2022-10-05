@@ -5,10 +5,11 @@ const muteBtn = document.getElementById("mute");
 const cameraBtn = document.getElementById("camera");
 const camerasSelect = document.getElementById("cameras");
 const mikesSelect = document.getElementById("mikes");
-
+const room = document.getElementById("room");
 const call = document.getElementById("call");
+const mainTitle = document.getElementById("main-title");
 
-call.hidden = true; // 첫 화면에서 call 숨겨주기
+room.classList.add("hidden"); // 첫 화면에서 room 숨겨주기
 
 let myStream;
 let muted = false; // default : false; 왜냐면 처음에는 소리가 나는 상태로 시작할거기 때문
@@ -68,26 +69,30 @@ async function getMedia(deviceIds) {
 // getMedia(deviceIds);
 
 function handleMuteClick() {
-    myStream
+    myStream && myStream
         .getAudioTracks()
         .forEach((track) => {track.enabled = !track.enabled}); // true면 false로 false면 true로 바뀐다
     if(!muted) {
+        muteBtn.classList.add("off");
         muteBtn.innerText = "Unmute";
         muted = true;
     } else {
+        muteBtn.classList.remove("off");
         muteBtn.innerText = "Mute";
         muted = false;
     }
 }
 function handleCameraClick() {
-    myStream
+    myStream && myStream
         .getVideoTracks()
         .forEach((track) => {track.enabled = !track.enabled}); // true면 false로 false면 true로 바뀐다
-    console.log(myStream.getVideoTracks());
+    // console.log(myStream.getVideoTracks());
     if(cameraOff) {
+        cameraBtn.classList.remove("off");
         cameraBtn.innerText = "Turn Camera Off";
         cameraOff = false;
     } else {
+        cameraBtn.classList.add("off");
         cameraBtn.innerText = "Turn Camera On";
         cameraOff = true;
     }
@@ -127,8 +132,9 @@ welcomeForm = welcome.querySelector("form");
 let roomName;
 
 async function initCall() {
-    welcome.hidden = true;
-    call.hidden = false;
+    welcome.classList.add("hidden");
+    room.classList.remove("hidden");
+    mainTitle.classList.add("smaller");
     await getMedia(deviceIds);
     makeConnection();
 }
@@ -139,6 +145,10 @@ async function handleWelcomeSubmit(event) {
     await initCall();
     socket.emit("join_room", input.value);
     roomName = input.value;
+    const title = call.querySelector('h2')
+    const span = document.createElement("span");
+    span.innerText = "(방이름 : " + input.value + ")";
+    title.appendChild(span);
     input.value = "";
 }
 
@@ -148,7 +158,11 @@ welcomeForm.addEventListener("submit", handleWelcomeSubmit);
 
 socket.on("welcome", async() => { // ⭐ PeerA에서 실행됨
     myDataChannel = myPeerConnection.createDataChannel("chat"); // 채널 추가
-    myDataChannel.addEventListener("message", (event) => console.log(event.data));
+    myDataChannel.addEventListener("message", (event) => {
+        printMessage(event.data, false); // 출력하고
+        // console.log(event.data)
+    });
+    chat.classList.remove('waiting');
     console.log("made data channel");
     const offer = await myPeerConnection.createOffer();
     myPeerConnection.setLocalDescription(offer);
@@ -159,8 +173,12 @@ socket.on("welcome", async() => { // ⭐ PeerA에서 실행됨
 socket.on("offer", async(offer) => { // ⭐ PeerB에서 실행됨
     myPeerConnection.addEventListener("datachannel", (event) => {
         myDataChannel = event.channel;
-        myDataChannel.addEventListener("message", (event) => console.log(event.data));
+        myDataChannel.addEventListener("message", (event) => {
+            printMessage(event.data, false); // 출력하고
+            // console.log(event.data)
+        });
     }) // data를 출력해준다
+    chat.classList.remove('waiting');
     console.log("received the offer");
     myPeerConnection.setRemoteDescription(offer);
     const answer = await myPeerConnection.createAnswer();
@@ -197,10 +215,10 @@ function makeConnection() {
 }); // 이 연결을 모든곳에 공유할것이다
     myPeerConnection.addEventListener("icecandidate", handleIce);
     myPeerConnection.addEventListener("addstream", handleAddStream);
-    myStream
+    myStream && myStream
         .getTracks()
         .forEach(track => myPeerConnection.addTrack(track, myStream));
-    console.log(myStream.getTracks());
+    // console.log(myStream.getTracks());
 };
 
 function handleIce(data) {
@@ -212,3 +230,30 @@ function handleAddStream(data) {
     const peerFace = document.getElementById("peerFace");
     peerFace.srcObject = data.stream;
 }
+
+// chat 관련 스크립트 
+const chat = document.getElementById("chat");
+const chatList = chat.querySelector("ul");
+const chatForm = chat.querySelector("form");
+
+function printMessage(message, didISendIt) { // li 출력
+    const list = document.createElement("li");
+    list.innerText = message;
+    if (didISendIt) {
+        list.className = "me";
+    }
+    chatList.appendChild(list);
+    chatList.scrollTo(0, chat.scrollHeight); // 스크롤 가장 하단으로 이동 
+}
+
+async function handlechatSubmit(event) { // 보내면
+    event.preventDefault();
+    const input = chatForm.querySelector("input");
+    message = input.value; // 값받고
+    if (message !== '') {
+        printMessage(message, true); // 출력하고
+        myDataChannel.send(message);// peer에게 보내고
+    }
+    input.value = ""; // 값삭제
+}
+chatForm.addEventListener("submit", handlechatSubmit);

@@ -1,3 +1,19 @@
+// {
+//     "liveServer.settings.port": 5501,
+//     "liveSassCompile.settings.includeItems": [
+    
+//     ]
+// }
 {
-    "liveServer.settings.port": 5501
+    "liveSassCompile.settings.formats": [
+
+        {
+            "format": "expanded",
+            "extensionName": ".css",
+            "savePath": "/src/public/css",
+            "savePathReplacementPairs": null
+        }
+    ],
+    "liveSassCompile.settings.autoprefix": null,
+    "liveSassCompile.settings.generateMap": false
 }

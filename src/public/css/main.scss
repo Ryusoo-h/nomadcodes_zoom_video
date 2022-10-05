@@ -1,0 +1,331 @@
+@font-face { // 배스킨라빈스
+    font-family: 'BRBA_B';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_seven@1.2/BRBA_B.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face { // 프리텐다드
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+$font-family: (
+    point: 'BRBA_B',
+    basic: 'Pretendard-Regular',
+);
+$color: (
+    notice: #d92670,
+    purple-b: #b77dd3,
+    purple-l: #c38edd,
+);
+$pd: 12px;
+%container { 
+    margin: 0 auto;
+    max-width: 1440px;
+    text-align: center;
+}
+%shadow {
+    box-shadow: 1px 2px 4px rgba(12, 41, 201, 0.2);
+}
+form {
+    display: inline-block;
+    border-radius: $pd*2;
+    background-color: #fff;
+}
+#enter-room {
+    @extend %shadow;
+}
+input {
+    font-size: 18px;
+    padding: $pd $pd*2;
+    border-color: transparent;
+    border-radius: $pd*2;
+    outline: none;
+}
+button {
+    font-family: map-get($font-family, point);
+    font-size: 18px;
+    color: #fff;
+    border-color: transparent;
+    padding: $pd $pd*2;
+    border-radius: $pd*2;
+    background-color: map-get($color, purple-l);
+    transition: background-color 0.2s ease-in-out;
+    &:hover {
+        background-color: map-get($color, purple-b);
+    }
+}
+video {
+    background-color: #333;
+}
+.card {
+    background-color: #fff;
+    border-radius: 20px;
+    @extend %shadow;
+    padding: $pd*2;
+}
+.description {
+    background-color: rgba($color: #03339c, $alpha: 0.08);
+    display: inline-block;
+    font-size: 16px;
+    line-height: 1.6rem;
+    span {
+        color: map-get($color, notice);
+    }
+}
+:root, input {
+    font-family: map-get($font-family, basic);
+}
+body, div, select {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    padding: $pd*3;
+    &::before {
+        content: '';
+        display: block;
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background: linear-gradient(330deg, rgb(248, 203, 233), rgb(168, 205, 240), rgb(168, 205, 240), rgb(253, 237, 255));
+        pointer-events: none;
+    }
+}
+header {
+    @extend %container;
+    position: relative;
+    z-index: 1;
+    h1 {
+        margin: 100px 0;
+        color: #fff;
+        font-family: map-get($font-family, point);
+        font-size: 52px;
+        position: relative;
+        transform: skew(358deg, 342deg) scale(1.2,1);
+        text-shadow: 5px 9px 0 rgb(255 255 255 / 24%);
+        &.smaller {
+            transition: margin 1.1s ease-in-out,
+                transform 0.9s ease-in-out;
+            margin: $pd*2 0 ;
+            transform: skew(358deg, 342deg) scale(1, 0.8);
+        }
+        a {
+            text-decoration: none;
+            color: #fff
+        }
+    }
+}
+main {
+    @extend %container;
+    position: relative;
+    z-index: 2;
+}
+#welcome {
+    transition: opacity 0.3s ease-in-out, 
+        transform 0.5s ease-in-out, 
+        height 0.7s ease-in-out;
+        height: 221px;
+    &.hidden {
+        opacity: 0;
+        transform: translateY(-30%);
+        height: 0;
+        pointer-events: none;
+    }
+    .wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+}
+#room {
+    transition: all 0.5s ease-in-out;
+    overflow: hidden;
+    display: grid;
+    min-width: 1225px;
+    grid-template: 1fr / 1fr 350px;
+    gap: $pd*2;
+    &.hidden {
+        opacity: 0;
+        height: 0;
+    }
+    h2 {
+        margin: 0 0 $pd*2;
+        font-family: map-get($font-family, point);
+    }
+}
+#call {
+    & > .wrapper.flex {
+        display: flex;
+        justify-content: space-around;
+    }
+    h2 span {
+        display: inline-block;
+        margin: 5px 10px;
+        font-size: 18px;
+        color: #b77dd3;
+        font-family: map-get($font-family, basic);
+        vertical-align: top;
+    }
+}
+#setting {
+    width: 400px;
+    button {
+        margin: $pd;
+        &#mute {
+            width: 120px;
+        }
+        &#camera {
+            width: 190px;
+        }
+        &.off {
+            background-color: #dcd7e3;
+            &:hover {
+                background-color: rgb(186, 170, 207);
+            }
+        }
+    }
+    $label-w: 128px;
+    label {
+        display: inline-block;
+        width: $label-w;
+        text-align: left;
+    }
+    select {
+        margin: $pd auto;
+        width: calc(100% - ($label-w + (($pd / 4)*3*2)));
+        font-size: 15px;
+        padding: calc(($pd / 4)*3);
+        margin: calc(($pd / 4)*3);
+        border-color: transparent;
+        background-color: #f5f5f5;
+        border-radius: 12px;
+    }
+    option {
+        width: calc(100% - ($label-w + (($pd / 4)*3*2)));
+    }
+}
+#chat {
+    %style {
+        padding: calc(($pd / 4)*3) $pd;
+        border-radius: $pd;
+        font-size: 15px;
+    }
+    position: relative;
+    overflow: hidden;
+    &.waiting::after {
+        content: "친구가 들어오면 채팅할 수 있어요!";
+        display: block;
+        width: 100%;
+        height: 100%;
+        padding-top: $pd*10;
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-radius: 20px;
+        backdrop-filter: blur(2px);
+        background-color: rgb(227 237 251 / 73%);
+        color: map-get($color, purple-b);
+    }
+    ul {
+        scroll-behavior: smooth;
+        list-style: none;
+        padding: 0;
+        margin: 0 0 $pd 0;
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+        align-items: flex-start;
+        height: 600px;
+        overflow-y: scroll;
+        &::-webkit-scrollbar {
+            width: 5px; /*스크롤바의 너비*/
+        }
+        &::-webkit-scrollbar-thumb {
+            background-color: #dcd7e3; /*스크롤바의 색상*/
+        }
+        &::-webkit-scrollbar-track {
+            background-color: #fff; /*스크롤바 트랙 색상*/
+        }
+        li {
+            @extend %style;
+            max-width: 80%;
+            display: inline-block;
+            margin: calc($pd / 4) 0;
+            border: solid 1px #f5f5f5;
+            text-align: left;
+            word-break: keep-all;
+            &.me {
+                margin-right: 12px;
+                align-self: flex-end;
+                background-color: #f5f5f5;
+            }
+        }
+    }
+    input {
+        @extend %style;
+        background-color: #f5f5f5;
+        width: 213px;
+        border-radius: 12px 0 0 12px;
+    }
+    button {
+        @extend %style;
+        border-radius: 0 12px 12px 0;
+    }
+}
+footer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding: 16px;
+    %figure { 
+        content: '';
+        display: block;
+        position: absolute;
+    }
+    $link-color : map-get($color, purple-b);
+    #lecture {
+        display: inline-block;
+        padding: $pd $pd*2 $pd $pd*3;
+        position: relative;
+        text-align: right;
+        font-family: map-get($font-family, point);
+        color: $link-color;
+        text-decoration: none;
+        background-color: rgb(255, 255, 255);
+        border-radius: 20px;
+        transition: all 0.2s ease-in-out;
+        $padding-l: 20px;
+        opacity: 0.8;
+        &:hover {
+            @extend %shadow;
+            opacity: 1;
+        }
+        &::before {
+            @extend %figure;
+            left: $padding-l - 4;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 10px;
+            height: 2px;
+            background-color: $link-color;
+        }
+        &::after {
+            @extend %figure;
+            left: $padding-l;
+            top: 50%;
+            width: 6px;
+            height: 6px;
+            border-top: solid 2px $link-color;
+            border-right: solid 2px $link-color;
+            transform: translateY(-50%) rotate(45deg);
+        }
+    }
+}
+
+@media (max-width: 1295px) {
+    // 다음에 반응형으로도 해보지요
+}
