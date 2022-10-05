@@ -7,7 +7,7 @@ Zoom Clone using NodeJS, WebRTC and Websokets.
     ![방입장](https://user-images.githubusercontent.com/67295471/194081537-a0bc90c5-c6cd-40b2-839f-8467e9aff903.gif)
     <br>
     - 처음 방에 들어간다면 기기 사용 허용을 해주어야한다   
-    ![처음 방에 들어가면](https://user-images.githubusercontent.com/67295471/194058152-14c06d8b-0b74-4606-975f-674326271aa9.jpg)   
+    ![처음 방에 들어가면](https://user-images.githubusercontent.com/67295471/194118531-f02b7328-8995-4c0a-9f40-71642e498a97.jpg)  
     <br><br>
 
 2. 비디오, 오디오 기기 변경, 뮤트, 화면숨기기 가능
