@@ -17,7 +17,10 @@ let cameraOff = false;
 let myPeerConnection;
 let myDataChannel;
 
-async function getCameras() {
+
+// Phone Call //// START //
+
+async function makeMediaOption() {
     try{
         const devices = await navigator.mediaDevices.enumerateDevices();
         const cameras = devices.filter((device) => device.kind === "videoinput");
@@ -59,7 +62,7 @@ async function getMedia(deviceIds) {
         });
         myFace.srcObject = myStream;
         if(flag) { // 처음 실행할 한번만 가져온다.. 그렇지않으면 목록이 자꾸 늘어남
-            await getCameras();
+            await makeMediaOption();
             flag = false;
         }
     } catch (e) {
