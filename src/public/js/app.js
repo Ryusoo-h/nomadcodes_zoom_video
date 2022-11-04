@@ -24,27 +24,60 @@ async function makeMediaOption() {
     try{
         const devices = await navigator.mediaDevices.enumerateDevices();
         const cameras = devices.filter((device) => device.kind === "videoinput");
+        const mikes = devices.filter((device) => device.kind === "audioinput");
         const currentCamera = myStream.getVideoTracks()[0];
         const currentAudio = myStream.getAudioTracks()[0];
-        cameras.forEach((camera) => {
-            const option = document.createElement("option");
-            option.value = camera.deviceId;
-            option.innerText = camera.label;
-            if(currentCamera.label == camera.label) {
-                option.selected = true;
-            }
-            camerasSelect.appendChild(option);
-        });
-        const mikes = devices.filter((device) => device.kind === "audioinput");
-        mikes.forEach((mike) => {
-            const option = document.createElement("option");
-            option.value = mike.deviceId;
-            option.innerText = mike.label;
-            if(currentAudio.label == mike.label) {
-                option.selected = true;
-            }
-            mikesSelect.appendChild(option);
-        });
+        // cameras.forEach((camera) => {
+        //     const option = document.createElement("option");
+        //     option.value = camera.deviceId;
+        //     option.innerText = camera.label;
+        //     if(currentCamera.label == camera.label) {
+        //         option.selected = true;
+        //     }
+        //     camerasSelect.appendChild(option);
+        // });
+
+        // let cameraOptions = [];
+        // cameras.forEach((camera) => {
+        //     let selectedOption = currentCamera.label == camera.label ? 'selected' : '';
+        //     const option = `<option value="${camera.deviceId}" ${selectedOption}>${camera.label}</option>`;
+        //     cameraOptions.push(option);
+        // });
+        // camerasSelect.innerHTML = cameraOptions.join('');
+
+        function makeDeviceOptions(devices, currentDevice, selectNode) {
+            let options = [];
+
+            devices.forEach((device) => {
+                let selectedOption = currentDevice.label == device.label ? 'selected' : '';
+                const option = `<option value="${device.deviceId}" ${selectedOption}>${device.label}</option>`;
+                options.push(option);
+            });
+
+            selectNode.innerHTML = options.join('');
+        }
+        makeDeviceOptions(cameras, currentCamera, camerasSelect);
+        makeDeviceOptions(mikes, currentAudio, mikesSelect);
+        
+        // mikes.forEach((mike) => {
+        //     const option = document.createElement("option");
+        //     option.value = mike.deviceId;
+        //     option.innerText = mike.label;
+        //     if(currentAudio.label == mike.label) {
+        //         option.selected = true;
+        //     }
+        //     mikesSelect.appendChild(option);
+        // });
+
+        // let mikeOptions = [];
+        // mikes.forEach((mike) => {
+        //     let selectedOption = currentAudio.label == mike.label ? 'selected' : '';
+        //     const option = `<option value="${mike.deviceId}" ${selectedOption}>${mike.label}</option>`;
+        //     mikeOptions.push(option);
+        // });
+        // mikesSelect.innerHTML = mikeOptions.join('');
+
+
     }catch(e) {
         console.log(e);
     }
