@@ -63,34 +63,30 @@ async function getMedia(deviceIds) {
 }
 // getMedia(deviceIds);
 
+const toggleOff = (element, state, trueMsg, falseMsg) => {
+    if(state) {
+        element.classList.remove("off");
+        element.innerText = falseMsg;
+    } else {
+        element.classList.add("off");
+        element.innerText = trueMsg;
+    }
+    return !state;
+}
+
 function handleMuteClick() {
     myStream && myStream
         .getAudioTracks()
         .forEach((track) => {track.enabled = !track.enabled}); // true면 false로 false면 true로 바뀐다
-    if(!muted) {
-        muteBtn.classList.add("off");
-        muteBtn.innerText = "Unmute";
-        muted = true;
-    } else {
-        muteBtn.classList.remove("off");
-        muteBtn.innerText = "Mute";
-        muted = false;
-    }
+
+    muted = toggleOff(muteBtn, muted, "Unmute", "Mute");
 }
 function handleCameraClick() {
     myStream && myStream
         .getVideoTracks()
         .forEach((track) => {track.enabled = !track.enabled}); // true면 false로 false면 true로 바뀐다
-    // console.log(myStream.getVideoTracks());
-    if(cameraOff) {
-        cameraBtn.classList.remove("off");
-        cameraBtn.innerText = "Turn Camera Off";
-        cameraOff = false;
-    } else {
-        cameraBtn.classList.add("off");
-        cameraBtn.innerText = "Turn Camera On";
-        cameraOff = true;
-    }
+
+    cameraOff = toggleOff(cameraBtn, cameraOff, "Turn Camera On", "Turn Camera Off");
 }
 
 async function handleCameraChange() {
