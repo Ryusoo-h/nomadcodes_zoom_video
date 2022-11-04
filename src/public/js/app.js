@@ -27,23 +27,6 @@ async function makeMediaOption() {
         const mikes = devices.filter((device) => device.kind === "audioinput");
         const currentCamera = myStream.getVideoTracks()[0];
         const currentAudio = myStream.getAudioTracks()[0];
-        // cameras.forEach((camera) => {
-        //     const option = document.createElement("option");
-        //     option.value = camera.deviceId;
-        //     option.innerText = camera.label;
-        //     if(currentCamera.label == camera.label) {
-        //         option.selected = true;
-        //     }
-        //     camerasSelect.appendChild(option);
-        // });
-
-        // let cameraOptions = [];
-        // cameras.forEach((camera) => {
-        //     let selectedOption = currentCamera.label == camera.label ? 'selected' : '';
-        //     const option = `<option value="${camera.deviceId}" ${selectedOption}>${camera.label}</option>`;
-        //     cameraOptions.push(option);
-        // });
-        // camerasSelect.innerHTML = cameraOptions.join('');
 
         function makeDeviceOptions(devices, currentDevice, selectNode) {
             let options = [];
@@ -58,25 +41,6 @@ async function makeMediaOption() {
         }
         makeDeviceOptions(cameras, currentCamera, camerasSelect);
         makeDeviceOptions(mikes, currentAudio, mikesSelect);
-        
-        // mikes.forEach((mike) => {
-        //     const option = document.createElement("option");
-        //     option.value = mike.deviceId;
-        //     option.innerText = mike.label;
-        //     if(currentAudio.label == mike.label) {
-        //         option.selected = true;
-        //     }
-        //     mikesSelect.appendChild(option);
-        // });
-
-        // let mikeOptions = [];
-        // mikes.forEach((mike) => {
-        //     let selectedOption = currentAudio.label == mike.label ? 'selected' : '';
-        //     const option = `<option value="${mike.deviceId}" ${selectedOption}>${mike.label}</option>`;
-        //     mikeOptions.push(option);
-        // });
-        // mikesSelect.innerHTML = mikeOptions.join('');
-
 
     }catch(e) {
         console.log(e);
@@ -86,7 +50,6 @@ let deviceIds = {
     cameraDeviceId: { facingMode: "user"}, 
     audioDeviceId: true,
 };
-let flag = true;
 async function getMedia(deviceIds) {
     try {
         myStream = await navigator.mediaDevices.getUserMedia({
@@ -94,10 +57,6 @@ async function getMedia(deviceIds) {
             video: deviceIds.cameraDeviceId,
         });
         myFace.srcObject = myStream;
-        if(flag) { // 처음 실행할 한번만 가져온다.. 그렇지않으면 목록이 자꾸 늘어남
-            await makeMediaOption();
-            flag = false;
-        }
     } catch (e) {
         console.log(e);
     }
@@ -172,6 +131,7 @@ async function initCall() {
     room.classList.remove("hidden");
     mainTitle.classList.add("smaller");
     await getMedia(deviceIds);
+    await makeMediaOption();
     makeConnection();
 }
 
