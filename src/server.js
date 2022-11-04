@@ -7,9 +7,9 @@ const app = express();
 
 app.set("view engine", "pug");
 app.set("views", __dirname + "/views");
-app.use("/public", express.static(__dirname + "/public"));
+app.use("/public", express.static(__dirname + "/public")); // 정적 파일 제공
 app.get("/", (req, res) => res.render("home"));
-app.get("/*", (req, res) => res.redirect("/"));
+app.get("/*", (req, res) => res.redirect("/")); // 다른 url을 사용하지 않을것이기에 사용함.
 
 
 const httpServer = http.createServer(app);
