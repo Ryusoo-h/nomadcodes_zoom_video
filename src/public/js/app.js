@@ -91,12 +91,11 @@ function handleCameraClick() {
 
 async function handleCameraChange() {
     deviceIds.cameraDeviceId = { diviceId: { exact: camerasSelect.value}};
-    console.log(camerasSelect);
     await getMedia(deviceIds);
     if(myPeerConnection) {
         const videoTrack = myStream.getVideoTracks()[0]; // 바뀐 새로운 트랙
         const videoSender = myPeerConnection.getSenders().find(sender => sender.track.kind ==="video");
-        console.log(videoSender);
+        // console.log(videoSender);
         videoSender.replaceTrack(videoTrack);
     }
 }
@@ -106,7 +105,7 @@ async function handleMikeChange() {
     if(myPeerConnection) {
         const audioTrack = myStream.getAudioTracks()[0]; // 바뀐 새로운 트랙
         const audioSender = myPeerConnection.getSenders().find(sender => sender.track.kind ==="audio");
-        console.log(audioSender);
+        // console.log(audioSender);
         audioSender.replaceTrack(audioTrack);
     }
 }
@@ -119,7 +118,7 @@ mikesSelect.addEventListener("input", handleMikeChange);
 // Phone Call //// END //
 // Welcome Form (join a room) //// START //
 const welcome = document.getElementById("welcome");
-welcomeForm = welcome.querySelector("form");
+const welcomeForm = welcome.querySelector("form");
 let roomName;
 
 async function initCall() {
@@ -135,10 +134,9 @@ async function handleWelcomeSubmit(event) {
     event.preventDefault();
     const input = welcomeForm.querySelector("input");
     roomName = input.value;
-    const title = call.querySelector('h2')
-    const span = document.createElement("span");
-    span.innerText = "(방이름 : " + input.value + ")";
-    title.appendChild(span);
+    const title = call.querySelector('h2');
+    title.innerHTML = title.innerHTML + `<span>( 방이름 : ${input.value} )</span>`;
+
     await initCall();
     socket.emit("join_room", input.value);
     input.value = "";
